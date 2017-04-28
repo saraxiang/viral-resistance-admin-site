@@ -6,3 +6,21 @@ body {
   font-size: 13px;
   line-height: 20px;
 }
+
+.tree-level-wrapper {
+	width: 300px;
+	background-color: pink;
+	padding: 10px;
+	margin: 20px;
+}
+
+/* TODO: because width is set assuming that choice/text appears to the left, need to do something special for root of entire tree*/
+.parent-node-wrapper {
+	display: flex;
+	align-items: center;
+	width: 600px; /*290 for "choices card" + 300 for another parentNode */
+}
+
+.full-width {
+	width: 280px; 
+}
