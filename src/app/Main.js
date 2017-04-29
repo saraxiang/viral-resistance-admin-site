@@ -45,27 +45,45 @@ class Main extends Component {
         },
     };
     this.handleChoice = this.handleChoice.bind(this);
+    this.handlePrompt = this.handlePrompt.bind(this);
   }
 
   // assumptions: tree is object with a "choices" key; path is array that consists of
   // valid indices into "choices" arrays, and has length at least 1
-  updateTree(update, tree, path) {
+  updateChoice(update, tree, path) {
     var choices = tree["choices"];
     if (path.length == 1) {
       choices[path[0]]["text"] = update;
     }
     else {
-      choices[path[0]] = this.updateTree(update, choices[path[0]], path.splice(0,1));
+      choices[path[0]] = this.updateChoice(update, choices[path[0]], path.splice(0,1));
     }
     tree["choices"] = choices;
     return tree;
   }
 
   handleChoice(update, path) {
-    console.log('update: ' + update);
-    console.log('path: ' + path);
     var tree = Object.assign({}, this.state.tree);
-    tree = this.updateTree(update, tree, path);
+    tree = this.updateChoice(update, tree, path);
+    this.setState({
+      "tree": tree
+    });
+  }
+
+  updatePrompt(update, tree, path) {
+    if (path.length == 0) {
+      tree["context"]["prompt"] = update;
+      return tree;
+    } 
+    var choices = tree["choices"];
+    choices[path[0]] = this.updatePrompt(update, choices[path[0]], path.slice(1));
+    tree["choices"] = choices;
+    return tree;
+  }
+
+  handlePrompt(update, path) {
+    var tree = Object.assign({}, this.state.tree);
+    tree = this.updatePrompt(update, tree, path);
     this.setState({
       "tree": tree
     });
@@ -76,7 +94,7 @@ class Main extends Component {
 
     // we're assuming this.state.tree.text does not exist (because this is root)
   	if (isParentNode) {
-  		return <ParentNode onChoiceChange={this.handleChoice} path={[]} content={this.state.tree} />;
+  		return <ParentNode onPromptChange={this.handlePrompt} onChoiceChange={this.handleChoice} path={[]} content={this.state.tree} />;
   	}
   	return <LeafNode />;
   }

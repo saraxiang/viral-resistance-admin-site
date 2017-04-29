@@ -27,7 +27,7 @@ class ParentNode extends Component {
     // but may be overkill for this project 
     const children = content.choices.map((child, order) => {
       if (child.choices) {
-        return <ParentNode onChoiceChange={this.props.onChoiceChange} key={path.concat(order)} path={path.concat(order)} content={child} />; 
+        return <ParentNode onPromptChange={this.props.onPromptChange} onChoiceChange={this.props.onChoiceChange} key={path.concat(order)} path={path.concat(order)} content={child} />; 
       }
       return <LeafNode key={path.concat(order)}/>;
     });
@@ -48,7 +48,7 @@ class ParentNode extends Component {
         }
         <div>
           <div className="tree-level-wrapper">
-            <Context prompt={prompt}/>
+            <Context onPromptChange={this.props.onPromptChange} path={path} prompt={prompt}/>
             {children}
           </div>
         </div>
