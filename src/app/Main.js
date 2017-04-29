@@ -47,26 +47,36 @@ class Main extends Component {
     this.handleChoice = this.handleChoice.bind(this);
   }
 
-  handleChoice(choice, depth, text) {
-    console.log('choice: ' + choice);
-    console.log('depth: ' + depth);
-    console.log('text: ' + text);
+  // assumptions: tree is object with a "choices" key; path is array that consists of
+  // valid indices into "choices" arrays, and has length at least 1
+  updateTree(update, tree, path) {
+    var choices = tree["choices"];
+    if (path.length == 1) {
+      choices[path[0]]["text"] = update;
+    }
+    else {
+      choices[path[0]] = this.updateTree(update, choices[path[0]], path.splice(0,1));
+    }
+    tree["choices"] = choices;
+    return tree;
+  }
+
+  handleChoice(update, path) {
+    console.log('update: ' + update);
+    console.log('path: ' + path);
     var tree = Object.assign({}, this.state.tree);
-    console.log("copied tree: " + tree);  
-    tree["context"]["prompt"] = "changed";
+    tree = this.updateTree(update, tree, path);
     this.setState({
       "tree": tree
     });
   }
 
   render() {
-    const depth = 0;
     const isParentNode = this.state.tree.choices ? true : false;
 
     // we're assuming this.state.tree.text does not exist (because this is root)
-
   	if (isParentNode) {
-  		return <ParentNode onChoiceChange={this.handleChoice} depth={depth} content={this.state.tree} />;
+  		return <ParentNode onChoiceChange={this.handleChoice} path={[]} content={this.state.tree} />;
   	}
   	return <LeafNode />;
   }

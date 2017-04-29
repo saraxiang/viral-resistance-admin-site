@@ -14,27 +14,22 @@ class ParentNode extends Component {
     this.handleChoiceChange = this.handleChoiceChange.bind(this);
   }
   handleChoiceChange(event, newValue) {
-    // TODO: this will ideal not pass 3 parameters, but 2 where the last one
-    // is the unique id
-    this.props.onChoiceChange(newValue, this.props.depth, this.props.content.text);
+    this.props.onChoiceChange(newValue, this.props.path);
   }
   render() {
-    const depth = this.props.depth;
-    const newDepth = depth + 1;
     const content = this.props.content;
     const text = content.text;
     const prompt = content.context.prompt;
-    // TODO: it would be better if key was not dependent on text, but rather
-    // each node created and saved its on unique key upon creation
-    // this would allow better support of reordering later on, may be
-    // overkill for this project though
-    // Also here we're assuming all children in each level will have different text,
-    // which is a reasonable assumption, but...
-    const children = content.choices.map((child) => {
+    const path = this.props.path;
+
+    // TODO: it would be better if key was not dependent on order, but rather
+    // each node created and saved its on unique key upon 'will mount'
+    // but may be overkill for this project 
+    const children = content.choices.map((child, order) => {
       if (child.choices) {
-        return <ParentNode onChoiceChange={this.props.onChoiceChange} key={newDepth + child.text} depth={newDepth} content={child} />; 
+        return <ParentNode onChoiceChange={this.props.onChoiceChange} key={path.concat(order)} path={path.concat(order)} content={child} />; 
       }
-      return <LeafNode key={newDepth + child.text}/>;
+      return <LeafNode key={path.concat(order)}/>;
     });
 
     return (
