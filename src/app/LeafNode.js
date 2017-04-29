@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
+import {Card, CardText} from 'material-ui/Card';
 
 function LeafNode() {
   return (
-    <div className="card">
-		<div className="card-content">
-	    	<p>I am a Leaf</p>
-	  	</div>
-	</div> 
+	<Card>
+	  	<CardText style={{"padding": "8px", "margin": "8px",}}>
+			<p>I am a Leaf</p>
+		</CardText>
+	</Card>
   );
 }
 

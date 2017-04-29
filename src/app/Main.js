@@ -7,17 +7,46 @@ import ParentNode from './ParentNode';
 class Main extends Component {
 
   render() {
-  	const node1 = {text: "hello there"};
-  	const node2 = {};
-    return (
-      <div>
-      	<LeafNode />
-      	<div className="parent-node-wrapper">
-        	<ParentNode content={node1} />
-        	<ParentNode content={node2} />
-        </div>
-      </div>
-    );
+  	const tree = 
+  	{
+      "choices" : [ {
+        "choices" : [ {
+          "choices" : [ {
+            "leaf" : {
+              "globalVar" : "someVal"
+            },
+            "text" : "That's right!"
+          }, {
+            "text" : "On second thought..."
+          } ],
+          "context" : {
+            "prompt" : "Can't blindly trust this guy. He has a lot to gain by promoting his own company."
+          },
+          "text" : "...he's biased toward Spirit Corp."
+        }, {
+          "text" : "...he's wealthy"
+        }, {
+          "text" : "Go back"
+        } ],
+        "context" : {
+          "prompt" : "I can't trust this author because..."
+        },
+        "text" : "Nope, something's wrong"
+      }, {
+        "text" : "Sure, no reason to doubt"
+      }, {
+        "text" : "Go back"
+      } ],
+      "context" : {
+        "prompt" : "Always consider the source, as they say. Can I trust him?"
+      }
+    }
+    const isParentNode = tree.choices ? true : false;
+
+  	if (isParentNode) {
+  		return <ParentNode content={tree} />;
+  	}
+  	return <LeafNode />;
   }
 }
 

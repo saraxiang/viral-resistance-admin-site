@@ -1,5 +1,10 @@
 import React, {Component} from 'react';
 import TextField from 'material-ui/TextField';
+import Context from './Context';
+import LeafNode from './LeafNode';
+import {Card, CardText} from 'material-ui/Card';
+
+
 
 
 // ParentNode needs to know: 
@@ -9,19 +14,32 @@ class ParentNode extends Component {
   render() {
     const content = this.props.content;
     const text = content.text;
+    const prompt = content.context.prompt;
+    const children = content.choices.map((child) => {
+      if (child.choices) {
+        return <ParentNode content={child} />; 
+      }
+      return <LeafNode />;
+    });
 
     return (
-      <div>
+      <div className="parent-node-wrapper">
         {text && 
-          <div className="card full-width">
-            <div className="card-content">
+          <Card>
+              <CardText>
               <TextField
-                floatingLabelText={text}
-              />
-            </div>
-          </div> 
+                  defaultValue={text}
+                  floatingLabelText="Choice"
+                />
+            </CardText>
+          </Card>
         }
-        <h1> For now this needs to be here so that nothing isn't returned </h1>
+        <div>
+          <div className="tree-level-wrapper">
+            <Context prompt={prompt}/>
+            {children}
+          </div>
+        </div>
       </div>
     );
   }
