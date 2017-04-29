@@ -10,7 +10,7 @@ class Context extends Component {
 	  	<CardTitle title="Context" />
 	  	<CardText>
 			<TextField
-				defaultValue={prompt}
+				value={prompt}
 		      	floatingLabelText="Choice"
 		      	multiLine={true}
 		    />
