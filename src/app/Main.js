@@ -5,7 +5,16 @@ import ParentNode from './ParentNode';
 import RaisedButton from 'material-ui/RaisedButton';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
+import Rebase from 're-base';
 
+var base = Rebase.createClass({
+    apiKey: "AIzaSyCnGdZV39hgow--2Yev49Fvt3gS_lcMcxs",
+    authDomain: "birdgame-aea72.firebaseapp.com",
+    databaseURL: "https://birdgame-aea72.firebaseio.com",
+    projectId: "birdgame-aea72",
+    storageBucket: "birdgame-aea72.appspot.com",
+    messagingSenderId: "229376271005"
+});
 
 class Main extends Component {
   constructor(props) {
@@ -51,6 +60,16 @@ class Main extends Component {
     this.handleChoice = this.handleChoice.bind(this);
     this.handlePrompt = this.handlePrompt.bind(this);
     this.handleDropdown = this.handleDropdown.bind(this);
+  }
+
+  componentDidMount(){
+    this.ref = base.syncState('tree', {
+      context: this,
+      state: 'tree',
+    });
+  }
+  componentWillUnmount(){
+    base.removeBinding(this.ref);
   }
 
   // assumptions: tree is object with a "choices" key; path is array that consists of
