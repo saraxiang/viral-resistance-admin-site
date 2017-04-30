@@ -14,7 +14,7 @@ class ParentNode extends Component {
     this.handleChoiceChange = this.handleChoiceChange.bind(this);
   }
   handleChoiceChange(event, newValue) {
-    this.props.onChoiceChange(newValue, this.props.path);
+    this.props.onChoiceChange(newValue, this.props.path, this.props.articleNum, this.props.treeNum);
   }
   render() {
     const content = this.props.content;
@@ -27,7 +27,7 @@ class ParentNode extends Component {
     // but may be overkill for this project 
     const children = content.choices.map((child, order) => {
       if (child.choices) {
-        return <ParentNode onPromptChange={this.props.onPromptChange} onChoiceChange={this.props.onChoiceChange} key={path.concat(order)} path={path.concat(order)} content={child} />; 
+        return <ParentNode onPromptChange={this.props.onPromptChange} onChoiceChange={this.props.onChoiceChange} key={path.concat(order)} path={path.concat(order)} content={child} articleNum={this.props.articleNum} treeNum={this.props.treeNum}/>; 
       }
       return <LeafNode key={path.concat(order)}/>;
     });
@@ -48,7 +48,7 @@ class ParentNode extends Component {
         }
         <div>
           <div className="tree-level-wrapper">
-            <Context onPromptChange={this.props.onPromptChange} path={path} prompt={prompt}/>
+            <Context onPromptChange={this.props.onPromptChange} path={path} prompt={prompt} articleNum={this.props.articleNum} treeNum={this.props.treeNum}/>
             {children}
           </div>
         </div>

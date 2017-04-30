@@ -1,10 +1,8 @@
 import React, {Component} from 'react';
-import TextField from 'material-ui/TextField';
 import LeafNode from './LeafNode';
 import ParentNode from './ParentNode';
+import ExistingArticles from './ExistingArticles';
 import RaisedButton from 'material-ui/RaisedButton';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
 import Rebase from 're-base';
 
 var base = Rebase.createClass({
@@ -19,22 +17,16 @@ var base = Rebase.createClass({
 class Main extends Component {
   constructor(props) {
     super(props);
-    // This state is pulled from database, and pushed to database upon "save"
     this.state = {
-      dropdownSelected: 0,
-      tree: {},
       articles: [],
+      activeInterface: ""
     };
     this.handleChoice = this.handleChoice.bind(this);
     this.handlePrompt = this.handlePrompt.bind(this);
-    this.handleDropdown = this.handleDropdown.bind(this);
+    this.handleUpdateExisting = this.handleUpdateExisting.bind(this);
   }
 
   componentDidMount(){
-    this.treeRef = base.syncState('tree', {
-      context: this,
-      state: 'tree',
-    });
     this.articlesRef = base.syncState('articles', {
       context: this,
       state: 'articles',
@@ -43,7 +35,6 @@ class Main extends Component {
   }
 
   componentWillUnmount(){
-    base.removeBinding(this.treeRef);
     base.removeBinding(this.articlesRef);
   }
 
@@ -61,11 +52,11 @@ class Main extends Component {
     return tree;
   }
 
-  handleChoice(update, path) {
-    var tree = Object.assign({}, this.state.tree);
-    tree = this.updateChoice(update, tree, path);
+  handleChoice(update, path, articleNum, treeNum) {
+    var articles = Object.assign({}, this.state.articles);
+    articles[articleNum]["trees"][treeNum] = this.updateChoice(update, articles[articleNum]["trees"][treeNum], path);
     this.setState({
-      "tree": tree
+      articles: articles,
     });
   }
 
@@ -80,56 +71,41 @@ class Main extends Component {
     return tree;
   }
 
-  handlePrompt(update, path) {
-    var tree = Object.assign({}, this.state.tree);
-    tree = this.updatePrompt(update, tree, path);
+  handlePrompt(update, path, articleNum, treeNum) {
+    // TODO: make sure this is the best way to do this
+    var articles = Object.assign({}, this.state.articles);
+    articles[articleNum]["trees"][treeNum] = this.updatePrompt(update, articles[articleNum]["trees"][treeNum], path);
     this.setState({
-      "tree": tree
+      articles: articles,
     });
   }
 
-  handleDropdown(event, index, value) { 
-    this.setState({"dropdownSelected": value});
+  handleUpdateExisting() {
+    this.setState({
+      activeInterface: "updateExisting"
+    });
   }
 
   render() {
     // TODO: assuming here that we only care about template 1 articles
-    const template1Articles = this.state.articles.filter(function(article) {
-      return article ? (article.template ? article.template.num == 1 : false) : false;
+    const articleAndIndex = this.state.articles.map(function(article, i) {
+      return {"article": article, "index": i};
     });
-    const activeArticle = template1Articles[this.state.dropdownSelected]; 
-    const template = activeArticle ? activeArticle.template.p1 : "";
-    const dropdownOptions = template1Articles.map((article, count) => {
-      return <MenuItem key={article.name} value={count} primaryText={article.name} />
+    const template1ArticleAndIndex = articleAndIndex.filter(function(obj) {
+      return obj.article.template ? obj.article.template.num == 1 : false;
     });
-
-    const isParentNode = this.state.tree.choices ? true : false;
-    let node = null;
-    if (isParentNode) {
-     node = <ParentNode onPromptChange={this.handlePrompt} onChoiceChange={this.handleChoice} path={[]} content={this.state.tree} />;
-    } else {
-     node = <LeafNode />;
-    }
+    const template1Indices = template1ArticleAndIndex.map(function(obj) {
+      return obj.index;
+    });
+    const template1Articles = template1ArticleAndIndex.map(function(obj) {
+      return obj.article;
+    });
 
     return (
       <div>
-        <RaisedButton label="Update Existing Article" primary={true} />
+        <RaisedButton onTouchTap={this.handleUpdateExisting} label="Update Existing Article" primary={true} />
         <br />
-        <SelectField
-          floatingLabelText="Existing Article Name"
-          value={this.state.dropdownSelected}
-          onChange={this.handleDropdown}
-        >
-          {dropdownOptions}
-        </SelectField>
-        <br />
-        <TextField
-          value={template}
-          floatingLabelText="Template"
-          multiLine={true}
-          fullWidth={true}
-        />
-        {node}
+        {this.state.activeInterface == "updateExisting" && template1Articles.length > 0 && <ExistingArticles onPromptChange={this.handlePrompt} onChoiceChange={this.handleChoice} template1Articles={template1Articles} template1Indices={template1Indices}/>}
       </div>
     );
   }

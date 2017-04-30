@@ -9,7 +9,7 @@ class Context extends Component {
     this.handlePromptChange = this.handlePromptChange.bind(this);
   }
   handlePromptChange(event, newValue) {
-    this.props.onPromptChange(newValue, this.props.path);
+    this.props.onPromptChange(newValue, this.props.path, this.props.articleNum, this.props.treeNum);
   }
   render() {
 	const prompt = this.props.prompt;
