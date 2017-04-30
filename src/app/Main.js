@@ -21,41 +21,9 @@ class Main extends Component {
     super(props);
     // This state is pulled from database, and pushed to database upon "save"
     this.state = {
-      dropdownSelected: 1,
-      tree: 
-        {
-          "choices" : [ {
-            "choices" : [ {
-              "choices" : [ {
-                "leaf" : {
-                  "globalVar" : "someVal"
-                },
-                "text" : "That's right!"
-              }, {
-                "text" : "On second thought..."
-              } ],
-              "context" : {
-                "prompt" : "Can't blindly trust this guy. He has a lot to gain by promoting his own company."
-              },
-              "text" : "...he's biased toward Spirit Corp."
-            }, {
-              "text" : "...he's wealthy"
-            }, {
-              "text" : "Go back"
-            } ],
-            "context" : {
-              "prompt" : "I can't trust this author because..."
-            },
-            "text" : "Nope, something's wrong"
-          }, {
-            "text" : "Sure, no reason to doubt"
-          }, {
-            "text" : "Go back"
-          } ],
-          "context" : {
-            "prompt" : "Always consider the source, as they say. Can I trust him?"
-          }
-        },
+      dropdownSelected: 0,
+      tree: {},
+      articles: [],
     };
     this.handleChoice = this.handleChoice.bind(this);
     this.handlePrompt = this.handlePrompt.bind(this);
@@ -63,13 +31,20 @@ class Main extends Component {
   }
 
   componentDidMount(){
-    this.ref = base.syncState('tree', {
+    this.treeRef = base.syncState('tree', {
       context: this,
       state: 'tree',
     });
+    this.articlesRef = base.syncState('articles', {
+      context: this,
+      state: 'articles',
+      asArray: true,
+    });
   }
+
   componentWillUnmount(){
-    base.removeBinding(this.ref);
+    base.removeBinding(this.treeRef);
+    base.removeBinding(this.articlesRef);
   }
 
   // assumptions: tree is object with a "choices" key; path is array that consists of
@@ -118,13 +93,22 @@ class Main extends Component {
   }
 
   render() {
-    var testingTemplate = '"CONCOURSE, March 18, 2017 - Successful medical supply company, Spirit Corporation (NASDAQ: SPCP), has agreed to help the struggling city of Concourse by expanding the company’s important operations to Concourse\'s abandoned Rivers Warehouse. Concourse is in need of revitalization, and Spirit Corp.’s <a id=\"1\" href=\"#\">award-winning tools</a> will lend credibility to the area.  <br><br> Waylan Spindler, the influential Vice President of Spirit Corp., explained the situation by saying “Spirit Corp. is obviously the best in the business, and Concourse needs us desperately. Without our excellent services the city has no future.” Spindler went on to explain that he expects employment in Concourse to skyrocket and the number of surgeries performed there to increase tenfold in the next two years.  <br><br> Concourse residents support the idea too. <a id=\"2\" href=\"#\">A poll of unemployed local residents</a> found that 100% of them favored the creation of more jobs."';
+    // TODO: assuming here that we only care about template 1 articles
+    const template1Articles = this.state.articles.filter(function(article) {
+      return article ? (article.template ? article.template.num == 1 : false) : false;
+    });
+    const activeArticle = template1Articles[this.state.dropdownSelected]; 
+    const template = activeArticle ? activeArticle.template.p1 : "";
+    const dropdownOptions = template1Articles.map((article, count) => {
+      return <MenuItem key={article.name} value={count} primaryText={article.name} />
+    });
+
     const isParentNode = this.state.tree.choices ? true : false;
     let node = null;
-  	if (isParentNode) {
-  	 node = <ParentNode onPromptChange={this.handlePrompt} onChoiceChange={this.handleChoice} path={[]} content={this.state.tree} />;
-  	} else {
-  	 node = <LeafNode />;
+    if (isParentNode) {
+     node = <ParentNode onPromptChange={this.handlePrompt} onChoiceChange={this.handleChoice} path={[]} content={this.state.tree} />;
+    } else {
+     node = <LeafNode />;
     }
 
     return (
@@ -136,13 +120,11 @@ class Main extends Component {
           value={this.state.dropdownSelected}
           onChange={this.handleDropdown}
         >
-          <MenuItem value={1} primaryText="Article 1" />
-          <MenuItem value={2} primaryText="Article 2" />
-          <MenuItem value={3} primaryText="Article 3" />
+          {dropdownOptions}
         </SelectField>
         <br />
         <TextField
-          value={testingTemplate}
+          value={template}
           floatingLabelText="Template"
           multiLine={true}
           fullWidth={true}
