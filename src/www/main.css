@@ -12,6 +12,7 @@ body {
 	background-color: pink;
 	padding: 10px;
 	margin: 35px;
+	border-radius: 12px;
 }
 
 /* TODO: because width is set assuming that choice/text appears to the left, need to do something special for root of entire tree*/
