@@ -19,7 +19,7 @@ class Context extends Component {
 	  	<CardText>
 			<TextField
 				value={prompt}
-		      	floatingLabelText="Choice"
+		      	floatingLabelText="Prompt"
 		      	multiLine={true}
 		      	onChange={this.handlePromptChange}
 		    />

@@ -24,6 +24,7 @@ class Main extends Component {
     this.handleChoice = this.handleChoice.bind(this);
     this.handlePrompt = this.handlePrompt.bind(this);
     this.handleUpdateExisting = this.handleUpdateExisting.bind(this);
+    this.handleTemplate = this.handleTemplate.bind(this);
   }
 
   componentDidMount(){
@@ -41,19 +42,23 @@ class Main extends Component {
   // assumptions: tree is object with a "choices" key; path is array that consists of
   // valid indices into "choices" arrays, and has length at least 1
   updateChoice(update, tree, path) {
-    var choices = tree["choices"];
+    console.log("path in handleChoice:" + path);
+    let choices = tree["choices"];
     if (path.length == 1) {
       choices[path[0]]["text"] = update;
     }
     else {
-      choices[path[0]] = this.updateChoice(update, choices[path[0]], path.splice(0,1));
+      let newPath = path.slice();
+      newPath.splice(0,1);
+      choices[path[0]] = this.updateChoice(update, choices[path[0]], newPath);
     }
     tree["choices"] = choices;
     return tree;
   }
 
   handleChoice(update, path, articleNum, treeNum) {
-    var articles = Object.assign({}, this.state.articles);
+    console.log("path in main:" + path);
+    let articles = Object.assign({}, this.state.articles);
     articles[articleNum]["trees"][treeNum] = this.updateChoice(update, articles[articleNum]["trees"][treeNum], path);
     this.setState({
       articles: articles,
@@ -86,6 +91,15 @@ class Main extends Component {
     });
   }
 
+  handleTemplate(update, articleNum) {
+    var articles = Object.assign({}, this.state.articles);
+    // TODO: assuming template 1 articles only
+    articles[articleNum]["template"]["p1"] = update;
+    this.setState({
+      articles: articles,
+    });
+  }
+
   render() {
     // TODO: assuming here that we only care about template 1 articles
     const articleAndIndex = this.state.articles.map(function(article, i) {
@@ -105,7 +119,7 @@ class Main extends Component {
       <div>
         <RaisedButton onTouchTap={this.handleUpdateExisting} label="Update Existing Article" primary={true} />
         <br />
-        {this.state.activeInterface == "updateExisting" && template1Articles.length > 0 && <ExistingArticles onPromptChange={this.handlePrompt} onChoiceChange={this.handleChoice} template1Articles={template1Articles} template1Indices={template1Indices}/>}
+        {this.state.activeInterface == "updateExisting" && template1Articles.length > 0 && <ExistingArticles onTemplateChange={this.handleTemplate} onPromptChange={this.handlePrompt} onChoiceChange={this.handleChoice} template1Articles={template1Articles} template1Indices={template1Indices}/>}
       </div>
     );
   }

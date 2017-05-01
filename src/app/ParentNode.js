@@ -14,6 +14,9 @@ class ParentNode extends Component {
     this.handleChoiceChange = this.handleChoiceChange.bind(this);
   }
   handleChoiceChange(event, newValue) {
+    console.log("in parent, path: " + this.props.path);
+    console.log("in parent, articleNum: " + this.props.articleNum);
+    console.log("in parent, treeNum: " + this.props.treeNum);
     this.props.onChoiceChange(newValue, this.props.path, this.props.articleNum, this.props.treeNum);
   }
   render() {
@@ -27,9 +30,25 @@ class ParentNode extends Component {
     // but may be overkill for this project 
     const children = content.choices.map((child, order) => {
       if (child.choices) {
-        return <ParentNode onPromptChange={this.props.onPromptChange} onChoiceChange={this.props.onChoiceChange} key={path.concat(order)} path={path.concat(order)} content={child} articleNum={this.props.articleNum} treeNum={this.props.treeNum}/>; 
+        // TODO: for some reason when you indent before <ParentNode the node no longer is returned...
+        return  <ParentNode 
+                  onPromptChange={this.props.onPromptChange} 
+                  onChoiceChange={this.props.onChoiceChange} 
+                  key={path.concat(order)} 
+                  path={path.concat(order)} 
+                  content={child} 
+                  articleNum={this.props.articleNum} 
+                  treeNum={this.props.treeNum}
+                />; 
       }
-      return <LeafNode key={path.concat(order)}/>;
+      return  <LeafNode 
+                onChoiceChange={this.props.onChoiceChange} 
+                key={path.concat(order)}
+                path={path.concat(order)} 
+                content={child} 
+                articleNum={this.props.articleNum} 
+                treeNum={this.props.treeNum}
+              />;
     });
 
     return (
@@ -48,7 +67,13 @@ class ParentNode extends Component {
         }
         <div>
           <div className="tree-level-wrapper">
-            <Context onPromptChange={this.props.onPromptChange} path={path} prompt={prompt} articleNum={this.props.articleNum} treeNum={this.props.treeNum}/>
+            <Context 
+              onPromptChange={this.props.onPromptChange} 
+              path={path} 
+              prompt={prompt}
+              articleNum={this.props.articleNum} 
+              treeNum={this.props.treeNum}
+            />
             {children}
           </div>
         </div>
