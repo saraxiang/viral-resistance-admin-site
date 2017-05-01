@@ -27,12 +27,24 @@ class ExistingArticles extends Component {
     const activeArticle = this.props.template1Articles[this.state.dropdownSelected]; 
     const template = activeArticle.template.p1;
     const dropdownOptions = this.props.template1Articles.map((article, count) => {
-      return <MenuItem key={article.name} value={count} primaryText={article.name} />
+      return  <MenuItem 
+                key={article.name} 
+                value={count} 
+                primaryText={article.name} 
+              />
     });
     // note here we NEED TO ASSUME that every tree for any article starts with a parent node (that node can have just one child that is a leaf, but it needs at least a child)
     // also note that not planning to support reordering of trees (will always be based on order of occurence in the template), so using order as key is fine
     const trees = activeArticle.trees.map((tree, i) => {
-      return <ParentNode onPromptChange={this.props.onPromptChange} onChoiceChange={this.props.onChoiceChange} path={[]} content={tree} key={i} articleNum={this.props.template1Indices[this.state.dropdownSelected]} treeNum={i}/>;
+      return  <ParentNode 
+                onPromptChange={this.props.onPromptChange} 
+                onChoiceChange={this.props.onChoiceChange}
+                onCreateChoice={this.props.onCreateChoice} 
+                path={[]} content={tree} 
+                key={i} 
+                articleNum={this.props.template1Indices[this.state.dropdownSelected]} 
+                treeNum={i}
+              />;
     });
 
     return (

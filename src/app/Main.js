@@ -24,9 +24,11 @@ class Main extends Component {
     };
     this.handleChoice = this.handleChoice.bind(this);
     this.handlePrompt = this.handlePrompt.bind(this);
-    this.handleUpdateExisting = this.handleUpdateExisting.bind(this);
-    this.handleCreateNew = this.handleCreateNew.bind(this);
+    this.handleUpdateExistingArticle = this.handleUpdateExistingArticle.bind(this);
+    this.handleCreateNewArticle = this.handleCreateNewArticle.bind(this);
     this.handleTemplate = this.handleTemplate.bind(this);
+    this.handleCreateChoice = this.handleCreateChoice.bind(this);
+
   }
 
   componentDidMount(){
@@ -44,10 +46,8 @@ class Main extends Component {
   // assumptions: tree is object with a "choices" key; path is array that consists of
   // valid indices into "choices" arrays, and has length at least 1
   updateChoice(update, tree, path) {
-    console.log("path in handleChoice:" + path);
     let choices = tree["choices"];
     if (path.length == 1) {
-      console.log(choices);
       choices[path[0]]["text"] = update;
     }
     else {
@@ -60,7 +60,6 @@ class Main extends Component {
   }
 
   handleChoice(update, path, articleNum, treeNum) {
-    console.log("path in main:" + path);
     let articles = Object.assign({}, this.state.articles);
     articles[articleNum]["trees"][treeNum] = this.updateChoice(update, articles[articleNum]["trees"][treeNum], path);
     this.setState({
@@ -73,8 +72,10 @@ class Main extends Component {
       tree["context"]["prompt"] = update;
       return tree;
     } 
-    var choices = tree["choices"];
-    choices[path[0]] = this.updatePrompt(update, choices[path[0]], path.slice(1));
+    let choices = tree["choices"];
+    let newPath = path.slice();
+    newPath.splice(0,1);
+    choices[path[0]] = this.updatePrompt(update, choices[path[0]], newPath);
     tree["choices"] = choices;
     return tree;
   }
@@ -88,15 +89,40 @@ class Main extends Component {
     });
   }
 
-  handleUpdateExisting() {
+  createChoice(tree, path) {
+    let choices = tree["choices"];
+    if (path.length == 0) {
+      choices.push({"text" : ""});
+    } 
+    else {
+      let newPath = path.slice();
+      newPath.splice(0,1);
+      choices[path[0]] = this.createChoice(choices[path[0]], newPath);
+    }
+    tree["choices"] = choices;
+    return tree;
+  }
+
+  handleCreateChoice(path, articleNum, treeNum) {
+    console.log("path: " + path);
+    console.log("articleNum: " + articleNum);
+    console.log("treeNum: " + treeNum);
+    let articles = Object.assign({}, this.state.articles);
+    articles[articleNum]["trees"][treeNum] = this.createChoice(articles[articleNum]["trees"][treeNum], path);
+    this.setState({
+      articles: articles,
+    });
+  }
+
+  handleUpdateExistingArticle() {
     this.setState({
       activeInterface: "updateExisting"
     });
   }
 
-  handleCreateNew() {
+  handleCreateNewArticle() {
     this.setState({
-      activeInterface: "createNew"
+      activeInterface: "CreateNewArticle"
     });
   }
 
@@ -126,11 +152,26 @@ class Main extends Component {
 
     return (
       <div>
-        <RaisedButton onTouchTap={this.handleUpdateExisting} label="Update Existing Article" primary={true} style={{"margin": "10px"}}/>
-        <RaisedButton onTouchTap={this.handleCreateNew} label="Create New Article" primary={true} />
+        <RaisedButton onTouchTap={this.handleUpdateExistingArticle} label="Update Existing Article" primary={true} style={{"margin": "10px"}}/>
+        <RaisedButton onTouchTap={this.handleCreateNewArticle} label="Create New Article" primary={true} />
         <br />
-        {this.state.activeInterface == "updateExisting" && template1Articles.length > 0 && <ExistingArticles onTemplateChange={this.handleTemplate} onPromptChange={this.handlePrompt} onChoiceChange={this.handleChoice} template1Articles={template1Articles} template1Indices={template1Indices}/>}
-        {this.state.activeInterface == "createNew" && <CreateNewArticle onTemplateChange={this.handleTemplate} onPromptChange={this.handlePrompt} onChoiceChange={this.handleChoice} />}
+        {this.state.activeInterface == "updateExisting" && 
+          template1Articles.length > 0 && 
+          <ExistingArticles 
+            onTemplateChange={this.handleTemplate} 
+            onPromptChange={this.handlePrompt} 
+            onChoiceChange={this.handleChoice} 
+            template1Articles={template1Articles} 
+            template1Indices={template1Indices}
+            onCreateChoice={this.handleCreateChoice}
+          />}
+        {this.state.activeInterface == "CreateNewArticle" && 
+          <CreateNewArticle 
+            onTemplateChange={this.handleTemplate} 
+            onPromptChange={this.handlePrompt} 
+            onChoiceChange={this.handleChoice} 
+            onCreateChoice={this.handleCreateChoice}
+          />}
       </div>
     );
   }

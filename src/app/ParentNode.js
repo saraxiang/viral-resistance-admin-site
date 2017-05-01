@@ -3,6 +3,8 @@ import TextField from 'material-ui/TextField';
 import Context from './Context';
 import LeafNode from './LeafNode';
 import {Card, CardText} from 'material-ui/Card';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import ContentAdd from 'material-ui/svg-icons/content/add';
 
 // ParentNode needs to know: 
 // whether "text" exists aka whether it was generated as a result of a choice prior
@@ -12,12 +14,16 @@ class ParentNode extends Component {
     super(props);
     
     this.handleChoiceChange = this.handleChoiceChange.bind(this);
+    this.handleCreateChoice = this.handleCreateChoice.bind(this);
   }
   handleChoiceChange(event, newValue) {
     console.log("in parent, path: " + this.props.path);
     console.log("in parent, articleNum: " + this.props.articleNum);
     console.log("in parent, treeNum: " + this.props.treeNum);
     this.props.onChoiceChange(newValue, this.props.path, this.props.articleNum, this.props.treeNum);
+  }
+  handleCreateChoice() {
+    this.props.onCreateChoice(this.props.path, this.props.articleNum, this.props.treeNum);
   }
   render() {
     const content = this.props.content;
@@ -34,6 +40,7 @@ class ParentNode extends Component {
         return  <ParentNode 
                   onPromptChange={this.props.onPromptChange} 
                   onChoiceChange={this.props.onChoiceChange} 
+                  onCreateChoice={this.props.onCreateChoice} 
                   key={path.concat(order)} 
                   path={path.concat(order)} 
                   content={child} 
@@ -75,6 +82,15 @@ class ParentNode extends Component {
               treeNum={this.props.treeNum}
             />
             {children}
+            <div className="create-child">
+              <FloatingActionButton 
+                onTouchTap={this.handleCreateChoice}
+                secondary={true} 
+                style={{"marginTop": "10px"}}
+              >
+                <ContentAdd />
+              </FloatingActionButton>
+            </div>
           </div>
         </div>
       </div>
