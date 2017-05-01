@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import LeafNode from './LeafNode';
 import ParentNode from './ParentNode';
 import ExistingArticles from './ExistingArticles';
+import CreateNewArticle from './CreateNewArticle';
 import RaisedButton from 'material-ui/RaisedButton';
 import Rebase from 're-base';
 
@@ -24,6 +25,7 @@ class Main extends Component {
     this.handleChoice = this.handleChoice.bind(this);
     this.handlePrompt = this.handlePrompt.bind(this);
     this.handleUpdateExisting = this.handleUpdateExisting.bind(this);
+    this.handleCreateNew = this.handleCreateNew.bind(this);
     this.handleTemplate = this.handleTemplate.bind(this);
   }
 
@@ -45,6 +47,7 @@ class Main extends Component {
     console.log("path in handleChoice:" + path);
     let choices = tree["choices"];
     if (path.length == 1) {
+      console.log(choices);
       choices[path[0]]["text"] = update;
     }
     else {
@@ -91,6 +94,12 @@ class Main extends Component {
     });
   }
 
+  handleCreateNew() {
+    this.setState({
+      activeInterface: "createNew"
+    });
+  }
+
   handleTemplate(update, articleNum) {
     var articles = Object.assign({}, this.state.articles);
     // TODO: assuming template 1 articles only
@@ -117,9 +126,11 @@ class Main extends Component {
 
     return (
       <div>
-        <RaisedButton onTouchTap={this.handleUpdateExisting} label="Update Existing Article" primary={true} />
+        <RaisedButton onTouchTap={this.handleUpdateExisting} label="Update Existing Article" primary={true} style={{"margin": "10px"}}/>
+        <RaisedButton onTouchTap={this.handleCreateNew} label="Create New Article" primary={true} />
         <br />
         {this.state.activeInterface == "updateExisting" && template1Articles.length > 0 && <ExistingArticles onTemplateChange={this.handleTemplate} onPromptChange={this.handlePrompt} onChoiceChange={this.handleChoice} template1Articles={template1Articles} template1Indices={template1Indices}/>}
+        {this.state.activeInterface == "createNew" && <CreateNewArticle onTemplateChange={this.handleTemplate} onPromptChange={this.handlePrompt} onChoiceChange={this.handleChoice} />}
       </div>
     );
   }
