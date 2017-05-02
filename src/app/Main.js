@@ -31,6 +31,8 @@ class Main extends Component {
     this.handleCreateChoice = this.handleCreateChoice.bind(this);
     this.handleBranch = this.handleBranch.bind(this);
     this.handleDeleteParent = this.handleDeleteParent.bind(this);
+    this.handleCreateTree = this.handleCreateTree.bind(this);
+    this.handleDeleteTree = this.handleDeleteTree.bind(this);
   }
 
   componentDidMount(){
@@ -136,6 +138,14 @@ class Main extends Component {
     });
   }
 
+  handleDeleteTree(articleNum, treeNum) {
+    let articles = Object.assign({}, this.state.articles);
+    articles[articleNum]["trees"].splice(treeNum, 1)
+    this.setState({
+      articles: articles,
+    });
+  }
+
   createChoice(tree, path) {
     let choices = tree["choices"];
     if (path.length == 0) {
@@ -153,6 +163,17 @@ class Main extends Component {
   handleCreateChoice(path, articleNum, treeNum) {
     let articles = Object.assign({}, this.state.articles);
     articles[articleNum]["trees"][treeNum] = this.createChoice(articles[articleNum]["trees"][treeNum], path);
+    this.setState({
+      articles: articles,
+    });
+  }
+
+  handleCreateTree(articleNum) {
+    let articles = Object.assign({}, this.state.articles);
+    articles[articleNum]["trees"].push({
+      "context": {"prompt": ""},
+      "choices": [{"text": ""}]
+    });
     this.setState({
       articles: articles,
     });
@@ -233,6 +254,8 @@ class Main extends Component {
             onDeleteChoice={this.handleDeleteChoice}
             onBranch={this.handleBranch}
             onDeleteParent={this.handleDeleteParent}
+            onCreateTree={this.handleCreateTree}
+            onDeleteTree={this.handleDeleteTree}
           />}
         {this.state.activeInterface == "CreateNewArticle" && 
           <CreateNewArticle 
@@ -243,6 +266,8 @@ class Main extends Component {
             onDeleteChoice={this.handleDeleteChoice}
             onBranch={this.handleBranch}
             onDeleteParent={this.handleDeleteParent}
+            onCreateTree={this.handleCreateTree}
+            onDeleteTree={this.handleDeleteTree}
           />}
       </div>
     );

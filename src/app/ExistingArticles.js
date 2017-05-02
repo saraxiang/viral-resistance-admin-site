@@ -3,6 +3,8 @@ import TextField from 'material-ui/TextField';
 import ParentNode from './ParentNode';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
+import RaisedButton from 'material-ui/RaisedButton';
+
 
 class ExistingArticles extends Component {
   constructor(props) {
@@ -12,6 +14,7 @@ class ExistingArticles extends Component {
     };
     this.handleDropdown = this.handleDropdown.bind(this);
     this.handleTemplateChange = this.handleTemplateChange.bind(this);
+    this.handleCreateTree = this.handleCreateTree.bind(this);
   }
 
   handleDropdown(event, index, value) { 
@@ -20,6 +23,10 @@ class ExistingArticles extends Component {
 
   handleTemplateChange(event, newValue) {
     this.props.onTemplateChange(newValue, this.props.template1Indices[this.state.dropdownSelected]);
+  }
+
+  handleCreateTree() {
+    this.props.onCreateTree(this.props.template1Indices[this.state.dropdownSelected]);
   }
 
   render() {
@@ -50,6 +57,7 @@ class ExistingArticles extends Component {
                 treeNum={i}
                 numChoices={tree.choices.length}
                 isRoot={true}
+                onDeleteTree={this.props.onDeleteTree}
               />;
     });
 
@@ -71,6 +79,11 @@ class ExistingArticles extends Component {
           onChange={this.handleTemplateChange}
         />
         {trees}
+        <RaisedButton 
+          onTouchTap={this.handleCreateTree} 
+          label="Create New Tree" 
+          primary={true} 
+          style={{"margin": "10px"}}/>
       </div>
     );
   }

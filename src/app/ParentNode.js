@@ -18,6 +18,7 @@ class ParentNode extends Component {
     this.handleCreateChoice = this.handleCreateChoice.bind(this);
     this.handleDeleteChoice = this.handleDeleteChoice.bind(this);
     this.handleDeleteParent = this.handleDeleteParent.bind(this);
+    this.handleDeleteTree = this.handleDeleteTree.bind(this);
   }
   handleChoiceChange(event, newValue) {
     this.props.onChoiceChange(newValue, this.props.path, this.props.articleNum, this.props.treeNum);
@@ -30,6 +31,9 @@ class ParentNode extends Component {
   }
   handleDeleteParent() {
     this.props.onDeleteParent(this.props.path, this.props.articleNum, this.props.treeNum);
+  }
+  handleDeleteTree() {
+    this.props.onDeleteTree(this.props.articleNum, this.props.treeNum);
   }
   render() {
     const content = this.props.content;
@@ -101,6 +105,15 @@ class ParentNode extends Component {
             <FloatingActionButton 
               mini={true} 
               onTouchTap={this.handleDeleteParent}
+              style={{"margin": "4px"}}
+            >
+              <ContentClear />
+            </FloatingActionButton>
+          </div>}
+          {this.props.isRoot && <div className="delete-parent-button">
+            <FloatingActionButton 
+              mini={true} 
+              onTouchTap={this.handleDeleteTree}
               style={{"margin": "4px"}}
             >
               <ContentClear />
