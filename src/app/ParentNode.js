@@ -90,7 +90,6 @@ class ParentNode extends Component {
                 {moreThanOneChoice && <FloatingActionButton 
                   mini={true} 
                   onTouchTap={this.handleDeleteChoice}
-                  secondary={true} 
                   style={{"margin": "4px"}}
                 >
                   <ContentClear />
@@ -137,7 +136,6 @@ class ParentNode extends Component {
             <div className="create-child">
               <FloatingActionButton 
                 onTouchTap={this.handleCreateChoice}
-                secondary={true} 
                 style={{"marginTop": "10px"}}
               >
                 <ContentAdd />

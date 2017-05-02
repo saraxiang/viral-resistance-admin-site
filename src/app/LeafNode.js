@@ -34,7 +34,6 @@ class LeafNode extends Component {
           	{moreThanOneChoice && <FloatingActionButton 
             	mini={true} 
             	onTouchTap={this.handleDeleteChoice}
-            	secondary={true} 
           	>
           		<ContentClear />
             </FloatingActionButton>}
