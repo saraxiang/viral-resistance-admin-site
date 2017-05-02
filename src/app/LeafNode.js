@@ -11,16 +11,21 @@ class LeafNode extends Component {
 
 		this.handleChoiceChange = this.handleChoiceChange.bind(this);
     	this.handleDeleteChoice = this.handleDeleteChoice.bind(this);
+    	this.handleBranch = this.handleBranch.bind(this);
 	}
+
 	handleChoiceChange(event, newValue) {
-		console.log("in leaf, path: " + this.props.path);
-		console.log("in leaf, articleNum: " + this.props.articleNum);
-		console.log("in leaf, treeNum: " + this.props.treeNum);
 		this.props.onChoiceChange(newValue, this.props.path, this.props.articleNum, this.props.treeNum);
 	}
-  handleDeleteChoice() {
-    this.props.onDeleteChoice(this.props.path, this.props.articleNum, this.props.treeNum);
-  }
+
+	handleDeleteChoice() {
+		this.props.onDeleteChoice(this.props.path, this.props.articleNum, this.props.treeNum);
+	}
+
+	handleBranch() {
+		this.props.onBranch(this.props.path, this.props.articleNum, this.props.treeNum);
+	}
+
 	render() {
 	    const moreThanOneChoice = this.props.numChoices > 1;
 		return (
@@ -43,6 +48,7 @@ class LeafNode extends Component {
 			    />
 			    <div className="branch-button">
 				    <FloatingActionButton 
+				    	onTouchTap={this.handleBranch}
 		            	mini={true} 
 	          		>
 	          			<ContentAdd />

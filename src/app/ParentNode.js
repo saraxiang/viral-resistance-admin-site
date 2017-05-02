@@ -19,9 +19,6 @@ class ParentNode extends Component {
     this.handleDeleteChoice = this.handleDeleteChoice.bind(this);
   }
   handleChoiceChange(event, newValue) {
-    console.log("in parent, path: " + this.props.path);
-    console.log("in parent, articleNum: " + this.props.articleNum);
-    console.log("in parent, treeNum: " + this.props.treeNum);
     this.props.onChoiceChange(newValue, this.props.path, this.props.articleNum, this.props.treeNum);
   }
   handleCreateChoice() {
@@ -54,6 +51,7 @@ class ParentNode extends Component {
                   articleNum={this.props.articleNum} 
                   treeNum={this.props.treeNum}
                   numChoices={this.props.content.choices.length}
+                  onBranch={this.props.onBranch}
                 />; 
       }
       return  <LeafNode 
@@ -65,12 +63,13 @@ class ParentNode extends Component {
                 articleNum={this.props.articleNum} 
                 treeNum={this.props.treeNum}
                 numChoices={this.props.content.choices.length}
+                onBranch={this.props.onBranch}
               />;
     });
 
     return (
       <div className="parent-node-wrapper">
-        {text && 
+        {!this.props.isRoot && 
           <Card>
               <div className="parent-close-button">
                 {moreThanOneChoice && <FloatingActionButton 

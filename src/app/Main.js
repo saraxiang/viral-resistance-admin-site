@@ -29,7 +29,7 @@ class Main extends Component {
     this.handleDeleteChoice = this.handleDeleteChoice.bind(this);
     this.handleTemplate = this.handleTemplate.bind(this);
     this.handleCreateChoice = this.handleCreateChoice.bind(this);
-
+    this.handleBranch = this.handleBranch.bind(this);
   }
 
   componentDidMount(){
@@ -68,6 +68,28 @@ class Main extends Component {
     });
   }
 
+  branch(tree, path) {
+    let choices = tree["choices"];
+    if (path.length == 1) {
+      choices[path[0]]["context"] = {"prompt": ""};
+      choices[path[0]]["choices"] = [{"text": ""}];
+    }
+    else {
+      let newPath = path.slice();
+      newPath.splice(0,1);
+      choices[path[0]] = this.branch(choices[path[0]], newPath);
+    }
+    tree["choices"] = choices;
+    return tree;
+  }
+
+  handleBranch(path, articleNum, treeNum) {
+    let articles = Object.assign({}, this.state.articles);
+    articles[articleNum]["trees"][treeNum] = this.branch(articles[articleNum]["trees"][treeNum], path);
+    this.setState({
+      articles: articles,
+    });
+  }
   updatePrompt(update, tree, path) {
     if (path.length == 0) {
       tree["context"]["prompt"] = update;
@@ -105,9 +127,6 @@ class Main extends Component {
   }
 
   handleCreateChoice(path, articleNum, treeNum) {
-    console.log("path: " + path);
-    console.log("articleNum: " + articleNum);
-    console.log("treeNum: " + treeNum);
     let articles = Object.assign({}, this.state.articles);
     articles[articleNum]["trees"][treeNum] = this.createChoice(articles[articleNum]["trees"][treeNum], path);
     this.setState({
@@ -130,9 +149,6 @@ class Main extends Component {
   }
 
   handleDeleteChoice(path, articleNum, treeNum) {
-    console.log("path: " + path);
-    console.log("articleNum: " + articleNum);
-    console.log("treeNum: " + treeNum);
     let articles = Object.assign({}, this.state.articles);
     articles[articleNum]["trees"][treeNum] = this.deleteChoice(articles[articleNum]["trees"][treeNum], path);
     this.setState({
@@ -191,6 +207,7 @@ class Main extends Component {
             template1Indices={template1Indices}
             onCreateChoice={this.handleCreateChoice}
             onDeleteChoice={this.handleDeleteChoice}
+            onBranch={this.handleBranch}
           />}
         {this.state.activeInterface == "CreateNewArticle" && 
           <CreateNewArticle 
@@ -199,6 +216,7 @@ class Main extends Component {
             onChoiceChange={this.handleChoice} 
             onCreateChoice={this.handleCreateChoice}
             onDeleteChoice={this.handleDeleteChoice}
+            onBranch={this.handleBranch}
           />}
       </div>
     );
