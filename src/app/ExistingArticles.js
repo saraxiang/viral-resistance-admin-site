@@ -42,6 +42,7 @@ class ExistingArticles extends Component {
                 onCreateChoice={this.props.onCreateChoice} 
                 onDeleteChoice={this.props.onDeleteChoice}
                 onBranch={this.props.onBranch} 
+                onDeleteParent={this.props.onDeleteParent} 
                 path={[]} 
                 content={tree} 
                 key={i} 

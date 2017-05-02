@@ -40,20 +40,22 @@ class LeafNode extends Component {
             </FloatingActionButton>}
             </div>
 		  	<CardText style={{"padding": "8px", "margin": "8px",}}>
-			  	<TextField
-			      value={this.props.content.text}
-			      floatingLabelText="Choice"
-			      multiLine={true}
-			      onChange={this.handleChoiceChange}
-			    />
-			    <div className="branch-button">
-				    <FloatingActionButton 
-				    	onTouchTap={this.handleBranch}
-		            	mini={true} 
-	          		>
-	          			<ContentAdd />
-	            	</FloatingActionButton>
-	            </div>
+		  		<div className="leaf-card-content">
+				  	<TextField
+				      value={this.props.content.text}
+				      floatingLabelText="Choice"
+				      multiLine={true}
+				      onChange={this.handleChoiceChange}
+				    />
+				    <div className="branch-button">
+					    <FloatingActionButton 
+					    	onTouchTap={this.handleBranch}
+			            	mini={true} 
+		          		>
+		          			<ContentAdd />
+		            	</FloatingActionButton>
+		            </div>
+		        </div>
 			</CardText>
 		</Card>
 		);

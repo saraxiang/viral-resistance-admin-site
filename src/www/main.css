@@ -34,6 +34,7 @@ body {
 	left: 4px;
 }
 
+.delete-parent-button button,
 .branch-button button, 
 .close-button button, 
 .parent-close-button button {
@@ -42,6 +43,7 @@ body {
 	height: 30px !important;
 }
 
+.delete-parent-button svg,
 .branch-button svg,
 .close-button svg, 
 .parent-close-button svg {
@@ -50,12 +52,22 @@ body {
 	height: 30px !important;
 }
 
-.branch-button {
+.branch-button, .delete-parent-button {
 	position: relative;
 }
 
-.branch-button > div:first-child  {
+.branch-button > div:first-child {
 	position: absolute;
-	left: 300px;
-	top: -65px;
+	left: -5px;
+}
+
+.delete-parent-button > div:first-child {
+	position: absolute;
+	left: 23px;
+	top: 23px
+}
+
+.leaf-card-content {
+	display: flex;
+	align-items: center;
 }

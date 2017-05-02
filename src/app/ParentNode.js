@@ -17,6 +17,7 @@ class ParentNode extends Component {
     this.handleChoiceChange = this.handleChoiceChange.bind(this);
     this.handleCreateChoice = this.handleCreateChoice.bind(this);
     this.handleDeleteChoice = this.handleDeleteChoice.bind(this);
+    this.handleDeleteParent = this.handleDeleteParent.bind(this);
   }
   handleChoiceChange(event, newValue) {
     this.props.onChoiceChange(newValue, this.props.path, this.props.articleNum, this.props.treeNum);
@@ -26,6 +27,9 @@ class ParentNode extends Component {
   }
   handleDeleteChoice() {
     this.props.onDeleteChoice(this.props.path, this.props.articleNum, this.props.treeNum);
+  }
+  handleDeleteParent() {
+    this.props.onDeleteParent(this.props.path, this.props.articleNum, this.props.treeNum);
   }
   render() {
     const content = this.props.content;
@@ -45,6 +49,7 @@ class ParentNode extends Component {
                   onChoiceChange={this.props.onChoiceChange} 
                   onCreateChoice={this.props.onCreateChoice} 
                   onDeleteChoice={this.props.onDeleteChoice} 
+                  onDeleteParent={this.props.onDeleteParent}
                   key={path.concat(order)} 
                   path={path.concat(order)} 
                   content={child} 
@@ -92,6 +97,15 @@ class ParentNode extends Component {
           </Card>
         }
         <div>
+          {!this.props.isRoot && <div className="delete-parent-button">
+            <FloatingActionButton 
+              mini={true} 
+              onTouchTap={this.handleDeleteParent}
+              style={{"margin": "4px"}}
+            >
+              <ContentClear />
+            </FloatingActionButton>
+          </div>}
           <div className="tree-level-wrapper">
             <Context 
               onPromptChange={this.props.onPromptChange} 

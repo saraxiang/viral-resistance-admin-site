@@ -30,6 +30,7 @@ class Main extends Component {
     this.handleTemplate = this.handleTemplate.bind(this);
     this.handleCreateChoice = this.handleCreateChoice.bind(this);
     this.handleBranch = this.handleBranch.bind(this);
+    this.handleDeleteParent = this.handleDeleteParent.bind(this);
   }
 
   componentDidMount(){
@@ -90,6 +91,7 @@ class Main extends Component {
       articles: articles,
     });
   }
+
   updatePrompt(update, tree, path) {
     if (path.length == 0) {
       tree["context"]["prompt"] = update;
@@ -107,6 +109,28 @@ class Main extends Component {
     // TODO: make sure this is the best way to do this
     var articles = Object.assign({}, this.state.articles);
     articles[articleNum]["trees"][treeNum] = this.updatePrompt(update, articles[articleNum]["trees"][treeNum], path);
+    this.setState({
+      articles: articles,
+    });
+  }
+
+  deleteParent(tree, path) {
+    if (path.length == 0) {
+      let text = tree["text"];
+      tree = {"text": text};
+      return tree;
+    } 
+    let choices = tree["choices"];
+    let newPath = path.slice();
+    newPath.splice(0,1);
+    choices[path[0]] = this.deleteParent(choices[path[0]], newPath);
+    tree["choices"] = choices;
+    return tree;
+  }
+
+  handleDeleteParent(path, articleNum, treeNum) {
+    let articles = Object.assign({}, this.state.articles);
+    articles[articleNum]["trees"][treeNum] = this.deleteParent(articles[articleNum]["trees"][treeNum], path);
     this.setState({
       articles: articles,
     });
@@ -208,6 +232,7 @@ class Main extends Component {
             onCreateChoice={this.handleCreateChoice}
             onDeleteChoice={this.handleDeleteChoice}
             onBranch={this.handleBranch}
+            onDeleteParent={this.handleDeleteParent}
           />}
         {this.state.activeInterface == "CreateNewArticle" && 
           <CreateNewArticle 
@@ -217,6 +242,7 @@ class Main extends Component {
             onCreateChoice={this.handleCreateChoice}
             onDeleteChoice={this.handleDeleteChoice}
             onBranch={this.handleBranch}
+            onDeleteParent={this.handleDeleteParent}
           />}
       </div>
     );
