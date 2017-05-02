@@ -57,6 +57,7 @@ class ExistingArticles extends Component {
                 treeNum={i}
                 numChoices={tree.choices.length}
                 isRoot={true}
+                numTrees={activeArticle.trees.length}
                 onDeleteTree={this.props.onDeleteTree}
               />;
     });

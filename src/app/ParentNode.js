@@ -110,7 +110,7 @@ class ParentNode extends Component {
               <ContentClear />
             </FloatingActionButton>
           </div>}
-          {this.props.isRoot && <div className="delete-parent-button">
+          {this.props.isRoot && this.props.numTrees > 1 && <div className="delete-parent-button">
             <FloatingActionButton 
               mini={true} 
               onTouchTap={this.handleDeleteTree}
