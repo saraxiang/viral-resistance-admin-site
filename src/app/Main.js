@@ -2,8 +2,10 @@ import React, {Component} from 'react';
 import LeafNode from './LeafNode';
 import ParentNode from './ParentNode';
 import ExistingArticles from './ExistingArticles';
-import CreateNewArticle from './CreateNewArticle';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
 import Rebase from 're-base';
 
 var base = Rebase.createClass({
@@ -20,12 +22,12 @@ class Main extends Component {
     super(props);
     this.state = {
       articles: [],
-      activeInterface: ""
+      newArticleDialogOpen: false,
+      newArticleName: "",
+      dropdownSelected: 0,
     };
     this.handleChoice = this.handleChoice.bind(this);
     this.handlePrompt = this.handlePrompt.bind(this);
-    this.handleUpdateExistingArticle = this.handleUpdateExistingArticle.bind(this);
-    this.handleCreateNewArticle = this.handleCreateNewArticle.bind(this);
     this.handleDeleteChoice = this.handleDeleteChoice.bind(this);
     this.handleTemplate = this.handleTemplate.bind(this);
     this.handleCreateChoice = this.handleCreateChoice.bind(this);
@@ -34,6 +36,11 @@ class Main extends Component {
     this.handleCreateTree = this.handleCreateTree.bind(this);
     this.handleDeleteTree = this.handleDeleteTree.bind(this);
     this.handleDeleteArticle = this.handleDeleteArticle.bind(this);
+    this.handleNewArticle = this.handleNewArticle.bind(this);
+    this.handleCloseCreateNewArticle = this.handleCloseCreateNewArticle.bind(this);
+    this.handleNewArticleNameChange = this.handleNewArticleNameChange.bind(this);
+    this.handleCreateNewArticle = this.handleCreateNewArticle.bind(this);
+    this.handleDropdown = this.handleDropdown.bind(this);
   }
 
   componentDidMount(){
@@ -148,15 +155,11 @@ class Main extends Component {
   }
 
   handleDeleteArticle(articleNum) {
-    // let articles = Object.assign({}, this.state.articles);
     let articles = this.state.articles.slice();
-    console.log(articles);
-    // if (delete articles[articleNum]) console.log("should have worked");
     articles.splice(articleNum, 1);
-    console.log(articles);
-    console.log("here");
     this.setState({
       articles: articles,
+      dropdownSelected: 0,
     });
   }
 
@@ -215,18 +218,6 @@ class Main extends Component {
     });
   }
 
-  handleUpdateExistingArticle() {
-    this.setState({
-      activeInterface: "updateExisting"
-    });
-  }
-
-  handleCreateNewArticle() {
-    this.setState({
-      activeInterface: "CreateNewArticle"
-    });
-  }
-
   handleTemplate(update, articleNum) {
     var articles = Object.assign({}, this.state.articles);
     // TODO: assuming template 1 articles only
@@ -236,9 +227,51 @@ class Main extends Component {
     });
   }
 
+  handleNewArticle() {
+    this.setState({newArticleDialogOpen: true});
+  }
+
+  handleCloseCreateNewArticle() {
+    this.setState({
+      newArticleDialogOpen: false,
+      newArticleName: "",
+    });
+  }
+
+  handleNewArticleNameChange(obj, newName) {
+    this.setState({newArticleName: newName});
+  }
+
+  handleCreateNewArticle() {
+    let articles = this.state.articles.slice();
+    articles.unshift({
+      "name": this.state.newArticleName,
+      "template": {
+        "num": 1,
+        "p1": ""
+      },
+      "trees": [{
+        "context": {
+          "prompt": ""
+        },
+        "choices": [{
+          "text": ""
+        }]
+      }]
+    });
+    this.setState({
+      newArticleDialogOpen: false,
+      newArticleName: "",
+      articles: articles,
+      dropdownSelected: 0
+    });
+  }
+
+  handleDropdown(value) { 
+    this.setState({"dropdownSelected": value});
+  }
+
   render() {
-    console.log("rendering main");
-    console.log(this.state.articles);
     // TODO: assuming here that we only care about template 1 articles
     const articleAndIndex = this.state.articles.map(function(article, i) {
       return {"article": article, "index": i};
@@ -252,14 +285,28 @@ class Main extends Component {
     const template1Articles = template1ArticleAndIndex.map(function(obj) {
       return obj.article;
     });
+    const createNewArticleDialogActions = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onTouchTap={this.handleCloseCreateNewArticle}
+      />,
+      <FlatButton
+        label="Create"
+        primary={true}
+        onTouchTap={this.handleCreateNewArticle}
+      />,
+    ];
 
     return (
       <div>
-        <RaisedButton onTouchTap={this.handleUpdateExistingArticle} label="Update Existing Article" primary={true} style={{"margin": "10px"}}/>
-        <RaisedButton onTouchTap={this.handleCreateNewArticle} label="Create New Article" primary={true} />
+        <RaisedButton 
+          label="Create New Article" 
+          onTouchTap={this.handleNewArticle} 
+          primary={true}
+        />
         <br />
-        {this.state.activeInterface == "updateExisting" && 
-          template1Articles.length > 0 && 
+        {template1Articles.length > 0 && 
           <ExistingArticles 
             onTemplateChange={this.handleTemplate} 
             onPromptChange={this.handlePrompt} 
@@ -273,22 +320,24 @@ class Main extends Component {
             onCreateTree={this.handleCreateTree}
             onDeleteTree={this.handleDeleteTree}
             onDeleteArticle={this.handleDeleteArticle}
+            onDropdownChange={this.handleDropdown}
             numArticles={this.state.articles.length}
-          />}
-        {this.state.activeInterface == "CreateNewArticle" && 
-          <CreateNewArticle 
-            onTemplateChange={this.handleTemplate} 
-            onPromptChange={this.handlePrompt} 
-            onChoiceChange={this.handleChoice} 
-            onCreateChoice={this.handleCreateChoice}
-            onDeleteChoice={this.handleDeleteChoice}
-            onBranch={this.handleBranch}
-            onDeleteParent={this.handleDeleteParent}
-            onCreateTree={this.handleCreateTree}
-            onDeleteTree={this.handleDeleteTree}
-            onDeleteArticle={this.handleDeleteArticle}
-            numArticles={this.state.articles.length}
-          />}
+            dropdownSelected={this.state.dropdownSelected}
+        />}
+        <Dialog
+          title="Create New Article"
+          actions={createNewArticleDialogActions}
+          modal={true}
+          open={this.state.newArticleDialogOpen}
+        >
+          <TextField
+            value={this.state.newArticleName}
+            floatingLabelText="New Article Name"
+            multiLine={true}
+            fullWidth={true}
+            onChange={this.handleNewArticleNameChange}
+          />
+        </Dialog>
       </div>
     );
   }

@@ -9,35 +9,32 @@ import RaisedButton from 'material-ui/RaisedButton';
 class ExistingArticles extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      dropdownSelected: 0,
-    };
-    this.handleDropdown = this.handleDropdown.bind(this);
     this.handleTemplateChange = this.handleTemplateChange.bind(this);
     this.handleCreateTree = this.handleCreateTree.bind(this);
     this.handleDeleteArticle = this.handleDeleteArticle.bind(this);
-  }
-
-  handleDropdown(event, index, value) { 
-    this.setState({"dropdownSelected": value});
+    this.handleDropdownChange = this.handleDropdownChange.bind(this);
   }
 
   handleTemplateChange(event, newValue) {
-    this.props.onTemplateChange(newValue, this.props.template1Indices[this.state.dropdownSelected]);
+    this.props.onTemplateChange(newValue, this.props.template1Indices[this.props.dropdownSelected]);
   }
 
   handleCreateTree() {
-    this.props.onCreateTree(this.props.template1Indices[this.state.dropdownSelected]);
+    this.props.onCreateTree(this.props.template1Indices[this.props.dropdownSelected]);
   }
 
   handleDeleteArticle() {
-    this.props.onDeleteArticle(this.props.template1Indices[this.state.dropdownSelected]);
+    this.props.onDeleteArticle(this.props.template1Indices[this.props.dropdownSelected]);
     this.setState({"dropdownSelected": 0});
+  }
+
+  handleDropdownChange(event, index, value) {
+    this.props.onDropdownChange(value);
   }
 
   render() {
     // note here we can assume template1Articles has length at least 1, otherwise this component won't be rendered by Main
-    const activeArticle = this.props.template1Articles[this.state.dropdownSelected];
+    const activeArticle = this.props.template1Articles[this.props.dropdownSelected];
     const template = activeArticle.template.p1;
     const dropdownOptions = this.props.template1Articles.map((article, count) => {
       return  <MenuItem 
@@ -59,7 +56,7 @@ class ExistingArticles extends Component {
                 path={[]} 
                 content={tree} 
                 key={i} 
-                articleNum={this.props.template1Indices[this.state.dropdownSelected]} 
+                articleNum={this.props.template1Indices[this.props.dropdownSelected]} 
                 treeNum={i}
                 numChoices={tree.choices.length}
                 isRoot={true}
@@ -72,14 +69,14 @@ class ExistingArticles extends Component {
       <div>
         <SelectField
           floatingLabelText="Existing Article Name"
-          value={this.state.dropdownSelected}
-          onChange={this.handleDropdown}
+          value={this.props.dropdownSelected}
+          onChange={this.handleDropdownChange}
         >
           {dropdownOptions}
         </SelectField>
         {this.props.numArticles > 1 && <RaisedButton 
           onTouchTap={this.handleDeleteArticle} 
-          label="Delete Article" 
+          label="Delete Current Article" 
           primary={true} 
           style={{"margin": "10px"}}
         />}
