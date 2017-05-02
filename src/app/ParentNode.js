@@ -72,14 +72,16 @@ class ParentNode extends Component {
       <div className="parent-node-wrapper">
         {text && 
           <Card>
-              {moreThanOneChoice && <FloatingActionButton 
-                mini={true} 
-                onTouchTap={this.handleDeleteChoice}
-                secondary={true} 
-                style={{"margin": "4px"}}
-              >
-                <ContentClear />
-              </FloatingActionButton>}
+              <div className="parent-close-button">
+                {moreThanOneChoice && <FloatingActionButton 
+                  mini={true} 
+                  onTouchTap={this.handleDeleteChoice}
+                  secondary={true} 
+                  style={{"margin": "4px"}}
+                >
+                  <ContentClear />
+                </FloatingActionButton>}
+              </div>
               <CardText>
               <TextField
                   value={text}
