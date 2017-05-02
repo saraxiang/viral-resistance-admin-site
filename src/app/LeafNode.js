@@ -3,6 +3,7 @@ import TextField from 'material-ui/TextField';
 import {Card, CardText} from 'material-ui/Card';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentClear from 'material-ui/svg-icons/content/clear';
+import ContentAdd from 'material-ui/svg-icons/content/add';
 
 class LeafNode extends Component {
 	constructor(props) {
@@ -34,12 +35,19 @@ class LeafNode extends Component {
             </FloatingActionButton>}
             </div>
 		  	<CardText style={{"padding": "8px", "margin": "8px",}}>
-		  	<TextField
-		      value={this.props.content.text}
-		      floatingLabelText="Choice"
-		      multiLine={true}
-		      onChange={this.handleChoiceChange}
-		    />
+			  	<TextField
+			      value={this.props.content.text}
+			      floatingLabelText="Choice"
+			      multiLine={true}
+			      onChange={this.handleChoiceChange}
+			    />
+			    <div className="branch-button">
+				    <FloatingActionButton 
+		            	mini={true} 
+	          		>
+	          			<ContentAdd />
+	            	</FloatingActionButton>
+	            </div>
 			</CardText>
 		</Card>
 		);

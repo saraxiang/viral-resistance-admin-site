@@ -34,14 +34,28 @@ body {
 	left: 4px;
 }
 
-.close-button button, .parent-close-button button {
+.branch-button button, 
+.close-button button, 
+.parent-close-button button {
 	/* need to make the button smaller but material-ui component forces size via inline styles :(*/
 	width: 30px !important;
 	height: 30px !important;
 }
 
-.close-button svg, .parent-close-button svg {
+.branch-button svg,
+.close-button svg, 
+.parent-close-button svg {
 	/* need to make the button smaller but material-ui component forces size via inline styles :(*/
 	width: 18px !important;
 	height: 30px !important;
+}
+
+.branch-button {
+	position: relative;
+}
+
+.branch-button > div:first-child  {
+	position: absolute;
+	left: 300px;
+	top: -65px;
 }
