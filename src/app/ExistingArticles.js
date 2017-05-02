@@ -40,10 +40,13 @@ class ExistingArticles extends Component {
                 onPromptChange={this.props.onPromptChange} 
                 onChoiceChange={this.props.onChoiceChange}
                 onCreateChoice={this.props.onCreateChoice} 
-                path={[]} content={tree} 
+                onDeleteChoice={this.props.onDeleteChoice} 
+                path={[]} 
+                content={tree} 
                 key={i} 
                 articleNum={this.props.template1Indices[this.state.dropdownSelected]} 
                 treeNum={i}
+                numChoices={tree.choices.length}
               />;
     });
 

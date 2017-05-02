@@ -26,6 +26,7 @@ class Main extends Component {
     this.handlePrompt = this.handlePrompt.bind(this);
     this.handleUpdateExistingArticle = this.handleUpdateExistingArticle.bind(this);
     this.handleCreateNewArticle = this.handleCreateNewArticle.bind(this);
+    this.handleDeleteChoice = this.handleDeleteChoice.bind(this);
     this.handleTemplate = this.handleTemplate.bind(this);
     this.handleCreateChoice = this.handleCreateChoice.bind(this);
 
@@ -114,6 +115,31 @@ class Main extends Component {
     });
   }
 
+  deleteChoice(tree, path) {
+    let choices = tree["choices"];
+    if (path.length == 1) {
+      choices.splice(path[0], 1);
+    }
+    else {
+      let newPath = path.slice();
+      newPath.splice(0,1);
+      choices[path[0]] = this.deleteChoice(choices[path[0]], newPath);
+    }
+    tree["choices"] = choices;
+    return tree;
+  }
+
+  handleDeleteChoice(path, articleNum, treeNum) {
+    console.log("path: " + path);
+    console.log("articleNum: " + articleNum);
+    console.log("treeNum: " + treeNum);
+    let articles = Object.assign({}, this.state.articles);
+    articles[articleNum]["trees"][treeNum] = this.deleteChoice(articles[articleNum]["trees"][treeNum], path);
+    this.setState({
+      articles: articles,
+    });
+  }
+
   handleUpdateExistingArticle() {
     this.setState({
       activeInterface: "updateExisting"
@@ -164,6 +190,7 @@ class Main extends Component {
             template1Articles={template1Articles} 
             template1Indices={template1Indices}
             onCreateChoice={this.handleCreateChoice}
+            onDeleteChoice={this.handleDeleteChoice}
           />}
         {this.state.activeInterface == "CreateNewArticle" && 
           <CreateNewArticle 
@@ -171,6 +198,7 @@ class Main extends Component {
             onPromptChange={this.handlePrompt} 
             onChoiceChange={this.handleChoice} 
             onCreateChoice={this.handleCreateChoice}
+            onDeleteChoice={this.handleDeleteChoice}
           />}
       </div>
     );

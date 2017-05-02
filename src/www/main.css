@@ -26,3 +26,10 @@ body {
 	display: flex;
 	justify-content: center;
 }
+
+.close-button {
+	margin-top: 8px;
+	position: relative;
+	top: 4px;
+	left: 4px;
+}
