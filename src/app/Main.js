@@ -33,6 +33,7 @@ class Main extends Component {
     this.handleDeleteParent = this.handleDeleteParent.bind(this);
     this.handleCreateTree = this.handleCreateTree.bind(this);
     this.handleDeleteTree = this.handleDeleteTree.bind(this);
+    this.handleDeleteArticle = this.handleDeleteArticle.bind(this);
   }
 
   componentDidMount(){
@@ -146,6 +147,19 @@ class Main extends Component {
     });
   }
 
+  handleDeleteArticle(articleNum) {
+    // let articles = Object.assign({}, this.state.articles);
+    let articles = this.state.articles.slice();
+    console.log(articles);
+    // if (delete articles[articleNum]) console.log("should have worked");
+    articles.splice(articleNum, 1);
+    console.log(articles);
+    console.log("here");
+    this.setState({
+      articles: articles,
+    });
+  }
+
   createChoice(tree, path) {
     let choices = tree["choices"];
     if (path.length == 0) {
@@ -223,6 +237,8 @@ class Main extends Component {
   }
 
   render() {
+    console.log("rendering main");
+    console.log(this.state.articles);
     // TODO: assuming here that we only care about template 1 articles
     const articleAndIndex = this.state.articles.map(function(article, i) {
       return {"article": article, "index": i};
@@ -256,6 +272,8 @@ class Main extends Component {
             onDeleteParent={this.handleDeleteParent}
             onCreateTree={this.handleCreateTree}
             onDeleteTree={this.handleDeleteTree}
+            onDeleteArticle={this.handleDeleteArticle}
+            numArticles={this.state.articles.length}
           />}
         {this.state.activeInterface == "CreateNewArticle" && 
           <CreateNewArticle 
@@ -268,6 +286,8 @@ class Main extends Component {
             onDeleteParent={this.handleDeleteParent}
             onCreateTree={this.handleCreateTree}
             onDeleteTree={this.handleDeleteTree}
+            onDeleteArticle={this.handleDeleteArticle}
+            numArticles={this.state.articles.length}
           />}
       </div>
     );

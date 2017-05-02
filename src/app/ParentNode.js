@@ -20,21 +20,27 @@ class ParentNode extends Component {
     this.handleDeleteParent = this.handleDeleteParent.bind(this);
     this.handleDeleteTree = this.handleDeleteTree.bind(this);
   }
+
   handleChoiceChange(event, newValue) {
     this.props.onChoiceChange(newValue, this.props.path, this.props.articleNum, this.props.treeNum);
   }
+
   handleCreateChoice() {
     this.props.onCreateChoice(this.props.path, this.props.articleNum, this.props.treeNum);
   }
+
   handleDeleteChoice() {
     this.props.onDeleteChoice(this.props.path, this.props.articleNum, this.props.treeNum);
   }
+
   handleDeleteParent() {
     this.props.onDeleteParent(this.props.path, this.props.articleNum, this.props.treeNum);
   }
+
   handleDeleteTree() {
     this.props.onDeleteTree(this.props.articleNum, this.props.treeNum);
   }
+  
   render() {
     const content = this.props.content;
     const text = content.text;

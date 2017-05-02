@@ -15,6 +15,7 @@ class ExistingArticles extends Component {
     this.handleDropdown = this.handleDropdown.bind(this);
     this.handleTemplateChange = this.handleTemplateChange.bind(this);
     this.handleCreateTree = this.handleCreateTree.bind(this);
+    this.handleDeleteArticle = this.handleDeleteArticle.bind(this);
   }
 
   handleDropdown(event, index, value) { 
@@ -29,9 +30,14 @@ class ExistingArticles extends Component {
     this.props.onCreateTree(this.props.template1Indices[this.state.dropdownSelected]);
   }
 
+  handleDeleteArticle() {
+    this.props.onDeleteArticle(this.props.template1Indices[this.state.dropdownSelected]);
+    this.setState({"dropdownSelected": 0});
+  }
+
   render() {
     // note here we can assume template1Articles has length at least 1, otherwise this component won't be rendered by Main
-    const activeArticle = this.props.template1Articles[this.state.dropdownSelected]; 
+    const activeArticle = this.props.template1Articles[this.state.dropdownSelected];
     const template = activeArticle.template.p1;
     const dropdownOptions = this.props.template1Articles.map((article, count) => {
       return  <MenuItem 
@@ -71,6 +77,12 @@ class ExistingArticles extends Component {
         >
           {dropdownOptions}
         </SelectField>
+        {this.props.numArticles > 1 && <RaisedButton 
+          onTouchTap={this.handleDeleteArticle} 
+          label="Delete Article" 
+          primary={true} 
+          style={{"margin": "10px"}}
+        />}
         <br />
         <TextField
           value={template}
